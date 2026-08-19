@@ -1,0 +1,53 @@
+export const defaultAssets = [
+  {
+    id: 'hotel',
+    name: 'Grand Wahid Hotel Salatiga',
+    type: 'Hotel / Hospitality',
+    owner: 'PT Grand Wahid Pratama',
+    legal: 'SHGB Aktif',
+    area: '± 12.500 m²',
+    price: 'Rp 16.500.000 /m²',
+    value: 'Rp 280 Miliar',
+    status: 'green',
+    icon: '🏨',
+    center: [-7.3293, 110.5035],
+    coordinates: [[-7.32976, 110.50285], [-7.32890, 110.50290], [-7.32885, 110.50410], [-7.32980, 110.50400]],
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'perumahan',
+    name: 'Bukit Wahid Regency (Sektor B)',
+    type: 'Residential / Property',
+    owner: 'PT Putra Wahid Pratama',
+    legal: 'SHM Induk (Siap Pecah)',
+    area: '18.000 m² / 1.8 Ha',
+    price: 'Rp 11.500.000 /m²',
+    value: 'Rp 207 Miliar',
+    status: 'orange',
+    icon: '🏘️',
+    center: [-7.0132, 110.3945],
+    coordinates: [[-7.0142, 110.3935], [-7.0115, 110.3938], [-7.0120, 110.3965], [-7.0150, 110.3955]],
+    property_sold: 45,
+    property_installment: 12,
+    property_available: 14,
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'landbank',
+    name: 'Lahan Kosong Sidorejo',
+    type: 'Land',
+    owner: 'PT Putra Wahid Pratama',
+    legal: 'SHM',
+    area: 'Belum diukur',
+    price: 'Belum diinput',
+    value: 'Belum diinput',
+    status: 'blue',
+    icon: '📍',
+    center: null,
+    coordinates: null,
+    address: 'Sidorejo Lor, Kota Salatiga',
+    land_stage: 'Landbank',
+    land_condition: 'Clear & Clean',
+    created_at: new Date().toISOString()
+  }
+];
