@@ -10,14 +10,16 @@ function Dashboard({ onLogout }) {
   const [selectedAssetId, setSelectedAssetId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [polygonData, setPolygonData] = useState(null);
+  const [isDrawing, setIsDrawing] = useState(false);
 
-  const handleAddAsset = (drawnPolygonData = null) => {
-    // If drawnPolygonData is event object from button click, null it
-    if (drawnPolygonData && drawnPolygonData.type) {
-      drawnPolygonData = null;
-    }
-    setPolygonData(drawnPolygonData);
+  const handleStartDrawing = () => {
+    setIsDrawing(true);
     setSelectedAssetId(null);
+    setPolygonData(null);
+  };
+
+  const handleDrawCreated = (drawnPolygonData) => {
+    setPolygonData(drawnPolygonData);
     setShowModal(true);
   };
 
@@ -27,12 +29,14 @@ function Dashboard({ onLogout }) {
         onLogout={onLogout} 
         selectedId={selectedAssetId} 
         onSelectAsset={setSelectedAssetId} 
-        onAddAsset={handleAddAsset}
+        onAddAsset={handleStartDrawing}
       />
       <AssetMap 
         selectedId={selectedAssetId}
         onSelectAsset={setSelectedAssetId} 
-        onAddAsset={handleAddAsset}
+        onAddAsset={handleDrawCreated}
+        isDrawing={isDrawing}
+        setIsDrawing={setIsDrawing}
       />
       {showModal && (
         <AssetModal 

@@ -8,8 +8,17 @@ import { useAssets } from '../context/AssetContext';
 
 const SALATIGA_CENTER = [-7.15, 110.45];
 
-function GeomanInit({ onDrawCreated }) {
+function GeomanInit({ onDrawCreated, isDrawing, setIsDrawing }) {
   const map = useMap();
+
+  useEffect(() => {
+    if (isDrawing) {
+      map.pm.enableDraw('Polygon');
+    } else {
+      map.pm.disableDraw();
+    }
+  }, [isDrawing, map]);
+
   useEffect(() => {
     map.pm.addControls({
       position: 'topleft',
@@ -46,6 +55,8 @@ function GeomanInit({ onDrawCreated }) {
       center[0] /= coords.length;
       center[1] /= coords.length;
 
+      setIsDrawing(false);
+
       onDrawCreated({
         coordinates: coords,
         center: center,
@@ -59,12 +70,12 @@ function GeomanInit({ onDrawCreated }) {
       map.pm.removeControls();
       map.off('pm:create');
     };
-  }, [map, onDrawCreated]);
+  }, [map, onDrawCreated, setIsDrawing]);
 
   return null;
 }
 
-export default function AssetMap({ selectedId, onSelectAsset, onAddAsset }) {
+export default function AssetMap({ selectedId, onSelectAsset, onAddAsset, isDrawing, setIsDrawing }) {
   const { assets, updateAsset } = useAssets();
   const [base, setBase] = useState('satellite');
   const mapRef = useRef(null);
@@ -95,21 +106,19 @@ export default function AssetMap({ selectedId, onSelectAsset, onAddAsset }) {
 
   return (
     <main className="relative h-[62vh] md:h-full w-full overflow-hidden order-1 md:order-2">
-      <div className="absolute z-[1000] left-[9px] md:left-[15px] right-[9px] md:right-[15px] top-[9px] md:top-[15px] flex justify-between gap-[10px] pointer-events-none">
-        <div className="hidden md:block bg-[#fffdf9e8] backdrop-blur-[12px] shadow-[0_10px_30px_#4b3d2917] border border-[#ffffffb0] p-[10px_13px] rounded-[10px]">
-          <strong className="block text-[11px]">Peta aset</strong>
-          <span className="block text-[#8f887e] text-[8px] mt-[3px]">Salatiga & sekitarnya</span>
+      <div className="absolute z-[1000] right-[9px] md:right-[15px] top-[9px] md:top-[15px] flex gap-[6px] pointer-events-auto items-center">
+        <div className="hidden md:flex flex-col bg-[#fffdf9e8] backdrop-blur-[12px] shadow-[0_10px_30px_#4b3d2917] border border-[#ffffffb0] p-[6px_10px] rounded-[8px] text-left">
+          <strong className="block text-[10px] leading-tight font-bold">Peta aset</strong>
+          <span className="block text-[#8f887e] text-[7px] mt-[1px]">Salatiga & sekitarnya</span>
         </div>
-        <div className="flex gap-[6px] pointer-events-auto">
-          <button 
-            onClick={() => mapRef.current?.flyTo(SALATIGA_CENTER, 11, {duration: 1})}
-            className="h-[36px] md:h-[37px] rounded-[8px] px-[8px] md:px-[11px] border border-[#ffffffaa] bg-[#fffdf9e8] text-[#5d574e] text-[8px] md:text-[9px] font-black"
-          >⌂ Overview</button>
-          <button 
-            onClick={() => setBase(b => b === 'satellite' ? 'street' : 'satellite')}
-            className="h-[36px] md:h-[37px] rounded-[8px] px-[8px] md:px-[11px] border border-[#ffffffaa] bg-[#fffdf9e8] text-[#5d574e] text-[8px] md:text-[9px] font-black"
-          >◉ {base === 'satellite' ? 'Street' : 'Satellite'}</button>
-        </div>
+        <button 
+          onClick={() => mapRef.current?.flyTo(SALATIGA_CENTER, 11, {duration: 1})}
+          className="h-[36px] md:h-[37px] rounded-[8px] px-[8px] md:px-[11px] border border-[#ffffffaa] bg-[#fffdf9e8] text-[#5d574e] text-[8px] md:text-[9px] font-black"
+        >⌂ Overview</button>
+        <button 
+          onClick={() => setBase(b => b === 'satellite' ? 'street' : 'satellite')}
+          className="h-[36px] md:h-[37px] rounded-[8px] px-[8px] md:px-[11px] border border-[#ffffffaa] bg-[#fffdf9e8] text-[#5d574e] text-[8px] md:text-[9px] font-black"
+        >◉ {base === 'satellite' ? 'Street' : 'Satellite'}</button>
       </div>
 
       <MapContainer 
@@ -125,7 +134,11 @@ export default function AssetMap({ selectedId, onSelectAsset, onAddAsset }) {
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap contributors" maxZoom={19} />
         )}
 
-        <GeomanInit onDrawCreated={handleDrawCreated} />
+        <GeomanInit 
+          onDrawCreated={handleDrawCreated} 
+          isDrawing={isDrawing} 
+          setIsDrawing={setIsDrawing} 
+        />
 
         {assets.map(a => {
           if (!a.coordinates || a.coordinates.length < 3) return null;

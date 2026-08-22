@@ -21,13 +21,12 @@ export default function Auth({ onLogin }) {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
       
-      const { data: profile, error: profileError } = await supabase
+      const { data: profile } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', data.user.id)
         .single();
         
-      if (profileError) throw profileError;
       onLogin(profile?.role || 'surveyor');
     } catch (err) {
       setError(err.message || 'Login failed. Try demo credentials: admin@wahid.local / wahid123 or surveyor@wahid.local / wahid123');
